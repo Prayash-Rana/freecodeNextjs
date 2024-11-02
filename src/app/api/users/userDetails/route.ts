@@ -5,9 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 connect(); // Ensure this is properly configured for reuse.
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest,{params}: any) {
   try {
     const userId = await getDataFromToken(request);
+    //const userId = params.id; // Get the user ID from the route params
+
 
     const user = await User.findOne({ _id: userId }).select("-password");
 

@@ -33,7 +33,7 @@ const LoginPage = () => {
       if (response.status === 200) {
         toast.success("Login successful!");
         setUser({ email: "", password: "" }); // Reset form
-        router.push("/"); // Redirect to dashboard or desired route
+        router.push("/profile"); // Redirect to dashboard or desired route
       }
     } catch (error: any) {
       console.error("Login failed:", error);
