@@ -1,5 +1,4 @@
 import { connect } from "@/dbconfig/dbconnect";
-// import bcryptjs from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/userModel"; // Use default export
 import { sendEmail } from "@/helper/mailer";
@@ -19,22 +18,22 @@ export async function POST(request: NextRequest) {
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (!existingUser) {
       return NextResponse.json(
-        { success: false, error: "this user email not existed on server" },
+        { success: false, error: "This user email is not registered on the server" },
         { status: 409 }
       );
     }
 
-    
-
-    //send verification email
-    await sendEmail({email,emailType:"RESET",userId:existingUser._id})
+    // Send verification email
+    await sendEmail({ email, emailType: "RESET", userId: existingUser._id });
 
     return NextResponse.json(
-      { success: true, message: "token created successfully", user: existingUser },
+      { success: true, message: "Token created successfully", user: existingUser },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Error registering user:", error.message);
+  } catch (error: unknown) {
+    // Handle unknown type error safely
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    console.error("Error registering user:", errorMessage);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 }

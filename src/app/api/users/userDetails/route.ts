@@ -5,11 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 connect(); // Ensure this is properly configured for reuse.
 
-export async function GET(request: NextRequest,{params}: any) {
+export async function GET(request: NextRequest) {
   try {
     const userId = await getDataFromToken(request);
-    //const userId = params.id; // Get the user ID from the route params
-
 
     const user = await User.findOne({ _id: userId }).select("-password");
 
@@ -24,9 +22,10 @@ export async function GET(request: NextRequest,{params}: any) {
       message: "User found",
       data: user,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { error: error.message },
+      { error: errorMessage },
       { status: 400 }
     );
   }

@@ -1,21 +1,21 @@
 "use client";
+
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function verifyEmailPage() {
-  const [token, setToken] = useState("");
-  const [verified, setVerified] = useState(false);
-  const [error, setError] = useState(false);
+const VerifyEmailPage: React.FC = () => {
+  const [token, setToken] = useState<string>("");
+  const [verified, setVerified] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
-  const verifyuserEmail = async () => {
+  const verifyUserEmail = async () => {
     try {
       await axios.post("/api/users/verifyEmail", { token });
-
       setVerified(true);
-    } catch (error: any) {
+    } catch (error) {
       setError(true);
-      console.log(error.response.data);
+      console.error(error.response?.data); // Use optional chaining to avoid errors if response is undefined
     }
   };
 
@@ -26,9 +26,9 @@ export default function verifyEmailPage() {
 
   useEffect(() => {
     if (token.length > 0) {
-      verifyuserEmail();
+      verifyUserEmail();
     }
-  }, [token]);
+  }, [token]); // Ensure token is in the dependency array
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
@@ -39,15 +39,17 @@ export default function verifyEmailPage() {
       {verified && (
         <div>
           <h2>Email Verified</h2>
-          <Link href="/login">login</Link>
+          <Link href="/login">Login</Link>
         </div>
       )}
 
       {error && (
         <div>
-          <h2>Error occured</h2>
+          <h2>Error occurred</h2>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default VerifyEmailPage;

@@ -44,11 +44,12 @@ export async function POST(request: NextRequest) {
       { success: true, message: "User registered successfully", user: newUser },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Error registering user:", error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    console.error("Error during login:", errorMessage);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
-  }
+}
 }

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // Normalize email to lowercase
     const normalizedEmail = email.toLowerCase();
 
-    const findingUser = await User.findOne({email: normalizedEmail });
+    const findingUser = await User.findOne({ email: normalizedEmail });
 
     if (!findingUser) {
       return NextResponse.json(
@@ -24,7 +24,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validPassword = await bcryptjs.compare(password, findingUser.password);
+    const validPassword = await bcryptjs.compare(
+      password,
+      findingUser.password
+    );
 
     if (!validPassword) {
       return NextResponse.json(
@@ -53,14 +56,15 @@ export async function POST(request: NextRequest) {
     // Set cookie with secure and httpOnly flags
     response.cookies.set("token", token, {
       httpOnly: true,
-      //secure: process.env.NODE_ENV === "production", // Ensure secure cookies in production
-      sameSite: "strict", // Prevent CSRF attacks
+      sameSite: "strict",
       maxAge: 3600, // 1 hour
     });
 
     return response;
-  } catch (error: any) {
-    console.error("Error during login:", error.message);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    console.error("Error during login:", errorMessage);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 }

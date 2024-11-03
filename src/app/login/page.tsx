@@ -23,8 +23,6 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
-    
-
     setLoading(true); // Show loading state during the request
 
     try {
@@ -35,9 +33,13 @@ const LoginPage = () => {
         setUser({ email: "", password: "" }); // Reset form
         router.push("/profile"); // Redirect to dashboard or desired route
       }
-    } catch (error: any) {
-      console.error("Login failed:", error);
-      toast.error(error.response?.data?.error || "Login failed. Try again.");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error && error.response
+          ? error.response.data.error
+          : "An error occurred";
+      console.log(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false); // Ensure loading state is reset
     }
@@ -53,7 +55,9 @@ const LoginPage = () => {
       <h1 className="text-2xl font-bold mb-6">Log In</h1>
 
       <div className="flex flex-col mb-4">
-        <label htmlFor="email" className="mb-1">Email</label>
+        <label htmlFor="email" className="mb-1">
+          Email
+        </label>
         <input
           type="email"
           name="email"
@@ -64,7 +68,9 @@ const LoginPage = () => {
       </div>
 
       <div className="flex flex-col mb-4">
-        <label htmlFor="password" className="mb-1">Password</label>
+        <label htmlFor="password" className="mb-1">
+          Password
+        </label>
         <input
           type="password"
           name="password"

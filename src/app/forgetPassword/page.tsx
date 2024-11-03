@@ -1,44 +1,40 @@
 "use client";
 import axios from "axios";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
-export default function forgetPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [emailSend, setEmailSend] = useState(false);
+export default function ForgetPasswordPage() {
+  const [email, setEmail] = useState<string>("");
+  const [emailSent, setEmailSent] = useState<boolean>(false);
 
   const handleEmailSend = async () => {
     try {
       if (email !== "") {
         await axios.post("/api/users/forgetPassword", { email });
-
-        setEmailSend(true);
+        setEmailSent(true);
       }
-    } catch (error: any) {
-      console.log(error.response.data);
-      toast.error(error.response.data.error);
-      setEmail("")
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error && error.response ? error.response.data.error : "An error occurred";
+      console.log(errorMessage);
+      toast.error(errorMessage);
+      setEmail("");
     }
   };
 
- 
-
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      {emailSend ? (
+      {emailSent ? (
         <p>Check your Email</p>
       ) : (
         <>
-          <h1 className="text-3xl">Forgetting Password</h1>
+          <h1 className="text-3xl">Forgot Password</h1>
           <h2>Send me an Email</h2>
 
           <input
-            className="border-2 border-gre"
+            className="border-2 border-gray-300"
             type="email"
             name="email"
             value={email}
-            id=""
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -46,7 +42,7 @@ export default function forgetPasswordPage() {
             onClick={handleEmailSend}
             className="bg-orange-500 px-4 py-2 mt-4"
           >
-            send
+            Send
           </button>
         </>
       )}

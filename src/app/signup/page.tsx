@@ -6,13 +6,18 @@ import axios from "axios";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
 
+interface User {
+  email: string;
+  password: string;
+  username: string;
+}
 
-const SignUpPage = () => {
+const SignUpPage: React.FC = () => {
   const router = useRouter();
 
   const [buttonShow, setButtonShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({ email: "", password: "", username: "" });
+  const [user, setUser] = useState<User>({ email: "", password: "", username: "" });
 
   const handleSubmit = async () => {
     try {
@@ -26,21 +31,22 @@ const SignUpPage = () => {
         router.push("/login");
       }
       
-    } catch (error: any) {
-      if(error?.response?.status === 409){
-        toast.error("user already exists");
-
-      }else{
-         
-      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 409) {
+          toast.error("User already exists");
+        } else {
+          toast.error(error.response.data.message || "Something went wrong!");
+        }
+      } else {
+        toast.error("An unexpected error occurred!");
       }
-     
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser((prevUser) => ({ ...prevUser, [e.target.name]: e.target.value }));
   };
 
@@ -54,7 +60,7 @@ const SignUpPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <Toaster position="top-right" /> {/* Ensure Toaster is present */}
+      <Toaster position="top-right" />
       <h1 className="text-2xl text-green-500 font-bold mb-4">
         {loading ? "Processing..." : "Sign Up"}
       </h1>
@@ -65,7 +71,7 @@ const SignUpPage = () => {
           className="border-2 border-black p-2"
           name="username"
           placeholder="Enter username"
-          value={user.username} // Controlled input
+          value={user.username}
           onChange={handleChange}
           disabled={loading}
         />
@@ -77,7 +83,7 @@ const SignUpPage = () => {
           className="border-2 border-black p-2"
           name="email"
           placeholder="Enter email"
-          value={user.email} // Controlled input
+          value={user.email}
           onChange={handleChange}
           disabled={loading}
         />
@@ -89,7 +95,7 @@ const SignUpPage = () => {
           className="border-2 border-black p-2"
           name="password"
           placeholder="Enter password"
-          value={user.password} // Controlled input
+          value={user.password}
           onChange={handleChange}
           disabled={loading}
         />
@@ -99,7 +105,7 @@ const SignUpPage = () => {
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={handleSubmit}
-        disabled={!buttonShow || loading} // Disable during loading
+        disabled={!buttonShow || loading}
       >
         {buttonShow
           ? loading
