@@ -15,7 +15,11 @@ const VerifyEmailPage: React.FC = () => {
       setVerified(true);
     } catch (error) {
       setError(true);
-      console.error(error.response?.data); // Use optional chaining to avoid errors if response is undefined
+      if (axios.isAxiosError(error)) {
+        console.error(error.response?.data); // Only accesses response if error is an AxiosError
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 
