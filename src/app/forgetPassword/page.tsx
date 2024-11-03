@@ -1,5 +1,6 @@
 "use client";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -14,7 +15,9 @@ export default function ForgetPasswordPage() {
         setEmailSent(true);
       }
     } catch (error: unknown) {
-      const errorMessage = (error as any).response?.data?.error || "An error occurred";
+      const errorMessage = axios.isAxiosError(error) && error.response 
+        ? error.response.data.error 
+        : "An error occurred";
       console.log(errorMessage);
       toast.error(errorMessage);
       setEmail("");
