@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-const VerifyEmailPage: React.FC = () => {
+const ResetPasswordPage: React.FC = () => {
   const router = useRouter();
 
   const [token, setToken] = useState<string>("");
-  const [verified, setVerified] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
@@ -18,13 +16,16 @@ const VerifyEmailPage: React.FC = () => {
     if (password === confirmPassword) {
       try {
         await axios.post("/api/users/resetPassword", { token, password });
-        setVerified(true);
         toast.success("New password saved successfully");
         router.push("/login");
-      } catch (error: any) {
-        setError(true);
-        console.log(error.response.data);
-        toast.error(error.response.data.error || "An error occurred");
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response) {
+          console.log(error.response.data);
+          toast.error(error.response.data.error || "An error occurred");
+        } else {
+          console.error("An unknown error occurred");
+          toast.error("An unknown error occurred");
+        }
       }
     } else {
       toast.error("Password & confirm password do not match");
@@ -64,4 +65,4 @@ const VerifyEmailPage: React.FC = () => {
   );
 }
 
-export default VerifyEmailPage;
+export default ResetPasswordPage;
