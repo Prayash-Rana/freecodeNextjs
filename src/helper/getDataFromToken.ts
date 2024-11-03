@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 
 export const getDataFromToken = (request: NextRequest): string => {
@@ -11,7 +11,11 @@ export const getDataFromToken = (request: NextRequest): string => {
 
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!);
 
-    return decodedToken.id;
+    if (typeof decodedToken === "object" && "id" in decodedToken) {
+      return decodedToken.id;
+    } else {
+      throw new Error("Invalid token format");
+    }
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
