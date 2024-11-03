@@ -23,25 +23,25 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Show loading state during the request
-
+    setLoading(true);
+  
     try {
       const response = await axios.post("/api/users/login", user);
-
+  
       if (response.status === 200) {
         toast.success("Login successful!");
-        setUser({ email: "", password: "" }); // Reset form
-        router.push("/profile"); // Redirect to dashboard or desired route
+        setUser({ email: "", password: "" });
+        router.push("/profile");
       }
     } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error && error.response
+        axios.isAxiosError(error) && error.response
           ? error.response.data.error
           : "An error occurred";
       console.log(errorMessage);
       toast.error(errorMessage);
     } finally {
-      setLoading(false); // Ensure loading state is reset
+      setLoading(false);
     }
   };
 
