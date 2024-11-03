@@ -1,6 +1,4 @@
-"use client";
-import axios, { AxiosError } from "axios";
-
+import axios from "axios"; // Removed AxiosError import
 import { useState } from "react";
 import toast from "react-hot-toast";
 
