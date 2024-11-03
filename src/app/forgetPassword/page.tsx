@@ -14,7 +14,7 @@ export default function ForgetPasswordPage() {
         setEmailSent(true);
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error && error.response ? error.response.data.error : "An error occurred";
+      const errorMessage = (error as any).response?.data?.error || "An error occurred";
       console.log(errorMessage);
       toast.error(errorMessage);
       setEmail("");
