@@ -17,7 +17,7 @@ const LoginPage = () => {
 
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
